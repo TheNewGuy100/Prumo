@@ -1,0 +1,55 @@
+name: Release
+
+# Publica uma release quando uma tag de versão (v0.1.0, v1.2.3...) é enviada.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  publicar:
+    name: Compilar e publicar
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Atualizar o Rust
+        run: |
+          rustup update stable
+          rustup default stable
+
+      - name: Conferir a versão
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}".TrimStart('v')
+          $cargo = (Select-String -Path Cargo.toml -Pattern '^version = "(.+)"').Matches[0].Groups[1].Value
+          if ($tag -ne $cargo) {
+            Write-Error "A tag ($tag) não bate com a versão do Cargo.toml ($cargo)."
+            exit 1
+          }
+
+      - name: Compilar
+        run: cargo build --release --locked
+
+      - name: Empacotar
+        shell: pwsh
+        run: |
+          $nome = "prumo-${{ github.ref_name }}-windows-x64"
+          New-Item -ItemType Directory $nome | Out-Null
+          Copy-Item target/release/prumo.exe, LICENSE, README.md, GLOSSARIO.md $nome
+          Compress-Archive -Path $nome -DestinationPath "$nome.zip"
+          $hash = (Get-FileHash "$nome.zip" -Algorithm SHA256).Hash.ToLower()
+          "$hash  $nome.zip" | Out-File "$nome.zip.sha256" -Encoding ascii
+
+      - name: Publicar
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $nome = "prumo-${{ github.ref_name }}-windows-x64"
+          gh release create "${{ github.ref_name }}" "$nome.zip" "$nome.zip.sha256" `
+            --title "Prumo ${{ github.ref_name }}" `
+            --generate-notes `
+            --prerelease

@@ -1,0 +1,17 @@
+[package]
+name = "prumo"
+version = "0.1.0"
+edition = "2021"
+description = "Monitor de recursos para Windows em que os numeros fecham"
+license = "GPL-3.0-only"
+repository = "https://github.com/TheNewGuy100/Prumo"
+readme = "README.md"
+
+[dependencies]
+eframe = { version = "0.37.0", default-features = false, features = ["glow", "default_fonts"] }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
