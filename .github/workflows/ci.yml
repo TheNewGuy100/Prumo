@@ -13,7 +13,7 @@ jobs:
     name: Compilar no Windows
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Atualizar o Rust
         run: |
@@ -21,7 +21,7 @@ jobs:
           rustup default stable
 
       - name: Guardar dependências
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cargo/registry
@@ -36,7 +36,7 @@ jobs:
         run: cargo test --release --locked
 
       - name: Guardar o executável
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: prumo-windows-x64
           path: target/release/prumo.exe

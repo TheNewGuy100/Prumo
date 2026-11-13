@@ -385,6 +385,18 @@ abre a janela principal. O atalho padrão está em aberto.
 
 ## Distribuição
 
+- **Repositório:** https://github.com/TheNewGuy100/Prumo (público, desde
+  13/11/2026).
+- **CI** (`.github/workflows/ci.yml`): a cada envio para `main` e a cada pull
+  request, compila no Windows com as dependências travadas e guarda o
+  executável como artefato.
+- **Releases** (`.github/workflows/release.yml`): enviar uma tag `vX.Y.Z`
+  compila e publica a release com o `.zip` (executável, licença, README e
+  glossário) e o arquivo de verificação SHA-256. A tag precisa bater com a
+  versão do `Cargo.toml`, senão o workflow falha de propósito. As releases
+  saem marcadas como pré-lançamento enquanto o executável não for assinado.
+- **Para publicar uma versão nova:** mudar a versão no `Cargo.toml`,
+  fazer o commit, criar a tag `vX.Y.Z` e enviá-la.
 - **Gratuito e de código aberto.** Nada é cobrado.
 - **Licença: GPLv3.** Derivados têm que continuar abertos.
   - Código MIT e Apache-2.0 pode ser incorporado (crates Rust, PresentMon).

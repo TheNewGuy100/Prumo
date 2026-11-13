@@ -13,7 +13,7 @@ jobs:
     name: Compilar e publicar
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Atualizar o Rust
         run: |
